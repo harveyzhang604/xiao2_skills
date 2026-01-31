@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """
-深度搜索分析模块 V3 - 真实需求挖掘
-使用 Reddit API 直接搜索用户痛点和需求
+深度搜索分析器 V4 - 需求真伪验证 + 商业价值判断
+====================================================
+
+核心功能：
+1. 5问法验证需求真伪
+2. Reddit 痛点挖掘
+3. 竞争域名分析
+4. 真实搜索意图判断
 """
 
 import asyncio
@@ -15,116 +21,186 @@ from urllib.parse import quote_plus
 logger = logging.getLogger(__name__)
 
 
-class DeepSearchAnalyzer:
-    """深度搜索分析器 V3 - Reddit API 真实搜索"""
+class DeepSearchAnalyzerV4:
+    """深度搜索分析器 V4 - 需求验证版"""
     
     def __init__(self):
         # 痛点信号词
-        self.pain_keywords = [
-            "struggling with", "how to fix", "error", "problem",
-            "cannot", "doesn't work", "failed", "help me",
-            "annoying", "tedious", "time consuming", "frustrated",
-            "wish there was", "looking for", "need a tool", 
-            "how do i", "is there a", "best way to", "tired of",
-            "waste of time", "manually", "repetitive", "boring",
-            "broken", "not working", "difficult", "hard to"
-        ]
+        self.pain_keywords = PAIN_TRIGGERS['critical'] + PAIN_TRIGGERS['medium']
         
         # 需求信号词
-        self.demand_signals = {
-            "calculator": "计算需求",
-            "generator": "生成需求",
-            "converter": "转换需求",
-            "formatter": "格式化需求",
-            "parser": "解析需求",
-            "checker": "验证需求",
-            "finder": "查找需求",
-            "maker": "制作需求",
-            "creator": "创建需求",
-            "tool": "工具需求",
-            "free": "免费需求",
-            "online": "在线需求",
-            "easy": "易用需求",
-            "automatic": "自动化需求"
+        self.demand_signals = TRANSACTIONAL_SIGNALS
+    
+    def validate_demand_5_questions(self, keyword: str, 
+                                     reddit_data: Dict = None,
+                                     google_data: Dict = None) -> Dict:
+        """
+        5问法验证需求真伪
+        
+        Q1: 是 Info 还是 Transactional 意图?
+        Q2: 是否有工具/解决方案?
+        Q3: 用户是否在抱怨?
+        Q4: 是否有付费意愿?
+        Q5: 竞争是否激烈?
+        """
+        keyword_lower = keyword.lower()
+        
+        answers = {}
+        score = 0
+        
+        # Q1: 意图类型
+        is_transactional = False
+        for signal in self.demand_signals['tool']:
+            if signal in keyword_lower:
+                is_transactional = True
+                answers['Q1'] = f"Transactional (工具需求): {signal}"
+                score += 20
+                break
+        
+        if not is_transactional:
+            for signal in INFO_SIGNALS:
+                if signal in keyword_lower:
+                    answers['Q1'] = f"Info (信息需求): {signal}"
+                    score -= 10
+                    break
+            else:
+                answers['Q1'] = "Mixed (混合)"
+        
+        # Q2: 解决方案检测
+        has_solution = False
+        for signal in ['tool', 'app', 'software', 'generator', 'online']:
+            if signal in keyword_lower:
+                has_solution = True
+                answers['Q2'] = f"有明确解决方案信号: {signal}"
+                score += 10
+                break
+        
+        if not has_solution:
+            answers['Q2'] = "无明确解决方案信号"
+        
+        # Q3: 痛点检测
+        pain_count = 0
+        found_pains = []
+        for pain in self.pain_keywords:
+            if pain in keyword_lower:
+                found_pains.append(pain)
+                pain_count += 1
+        
+        if pain_count > 0:
+            answers['Q3'] = f"痛点发现: {', '.join(found_pains)}"
+            score += pain_count * 15
+        else:
+            answers['Q3'] = "未发现明显痛点"
+        
+        # Q4: 付费意愿 (通过 Reddit 分析)
+        if reddit_data:
+            comments = reddit_data.get('total_mentions', 0)
+            if comments > 5:
+                answers['Q4'] = f"Reddit讨论活跃 ({comments}条), 可能存在付费需求"
+                score += 15
+            elif comments > 0:
+                answers['Q4'] = f"少量Reddit讨论 ({comments}条)"
+                score += 5
+            else:
+                answers['Q4'] = "Reddit无活跃讨论"
+        else:
+            answers['Q4'] = "无Reddit数据"
+        
+        # Q5: 竞争分析
+        if google_data:
+            competitors = google_data.get('competitors', [])
+            has_giant = any(c in GIANTS for c in competitors)
+            has_weak = any(c in WEAK_COMPETITORS for c in competitors)
+            
+            if has_giant:
+                answers['Q5'] = f"巨头存在: {competitors[:2]}"
+                score -= 20
+            elif has_weak:
+                answers['Q5'] = f"弱竞争 (机会): {competitors[:2]}"
+                score += 25
+            else:
+                answers['Q5'] = f"中等竞争: {competitors[:2] if competitors else '未知'}"
+        else:
+            answers['Q5'] = "无竞争数据"
+        
+        # 最终验证结果
+        is_valid = score >= 60 and (is_transactional or pain_count > 0)
+        
+        return {
+            'is_valid': is_valid,
+            'score': min(100, max(0, score)),
+            'intent_type': 'transactional' if is_transactional else 'info',
+            'questions': answers,
+            'pain_count': pain_count,
+            'found_pains': found_pains
         }
     
-    def search_reddit_api(self, keyword: str) -> Dict:
-        """使用 Reddit API 搜索真实痛点讨论"""
+    def search_reddit_real(self, keyword: str) -> Dict:
+        """真实搜索 Reddit 痛点讨论"""
         results = {
-            "reddit_posts": [],
-            "pain_points": [],
-            "real_complaints": [],
-            "total_mentions": 0,
-            "validation_score": 0
+            'total_mentions': 0,
+            'pain_posts': [],
+            'sentiment': 'neutral',
+            'solution_seeking': 0
         }
         
         try:
-            # Reddit 公开搜索 API
-            url = "https://www.reddit.com/search.json"
-            params = {
-                "q": keyword,
-                "limit": 20,
-                "sort": "relevance",
-                "restrict_sr": False,
-                "t": "year"
-            }
+            url = f"https://www.reddit.com/search.json?q={quote_plus(keyword)}&limit=20&sort=relevance"
             headers = {"User-Agent": "Mozilla/5.0"}
             
-            response = requests.get(url, params=params, headers=headers, timeout=15)
+            response = requests.get(url, headers=headers, timeout=15)
             response.raise_for_status()
             data = response.json()
             
             posts = data.get("data", {}).get("children", [])
-            results["total_mentions"] = len(posts)
+            results['total_mentions'] = len(posts)
             
-            pain_count = 0
+            pain_posts = []
+            solution_seeking = 0
+            
             for post in posts:
                 post_data = post.get("data", {})
                 title = post_data.get("title", "").lower()
                 selftext = post_data.get("selftext", "").lower()
                 combined = title + " " + selftext
                 
-                # 检测痛点
+                # 痛点检测
                 for pain in self.pain_keywords:
                     if pain in combined:
-                        pain_count += 1
-                        results["pain_points"].append(pain)
-                        
-                        # 提取真实抱怨
-                        if pain in title and len(title) < 200:
-                            results["real_complaints"].append({
-                                "text": post_data.get("title", ""),
-                                "score": post_data.get("score", 0),
-                                "comments": post_data.get("num_comments", 0),
-                                "url": f"https://reddit.com{post_data.get('permalink', '')}"
-                            })
+                        pain_posts.append({
+                            'title': post_data.get("title", ""),
+                            'score': post_data.get("score", 0),
+                            'comments': post_data.get("num_comments", 0)
+                        })
+                        break
+                
+                # 解决方案寻求
+                for signal in ['looking for', 'need a tool', 'is there a', 'wish there was']:
+                    if signal in combined:
+                        solution_seeking += 1
                         break
             
-            # 计算验证分数
-            total_comments = sum(p["comments"] for p in results["real_complaints"])
-            total_score = sum(p["score"] for p in results["real_complaints"])
+            results['pain_posts'] = pain_posts[:5]
+            results['solution_seeking'] = solution_seeking
             
-            results["validation_score"] = min(100,
-                pain_count * 10 + 
-                total_comments / 10 + 
-                total_score / 20
-            )
-            
-            logger.info(f"   ✅ Reddit: {results['total_mentions']}条讨论, {pain_count}个痛点")
+            # 情感分析
+            if len(pain_posts) > 3:
+                results['sentiment'] = 'negative'  # 大量痛点
+            elif solution_seeking > 2:
+                results['sentiment'] = 'seeking'  # 寻求解决方案
             
         except Exception as e:
-            logger.debug(f"Reddit API error for '{keyword}': {e}")
+            logger.debug(f"Reddit search error for '{keyword}': {e}")
         
         return results
     
     def analyze_google_serp(self, keyword: str) -> Dict:
-        """分析 Google SERP 需求"""
+        """分析 Google SERP 竞争环境"""
         results = {
-            "tool_results": 0,
-            "forum_results": 0,
-            "commercial_intent": 0,
-            "related_queries": [],
-            "is_question": False
+            'competitors': [],
+            'has_giant': False,
+            'has_weak': False,
+            'commercial_intent': 0
         }
         
         try:
@@ -134,170 +210,130 @@ class DeepSearchAnalyzer:
             response = requests.get(url, headers=headers, timeout=15)
             html = response.text
             
-            # 检测工具类结果
-            tool_domains = ["calculator", "converter", "generator", "tool", "online"]
-            for domain in tool_domains:
-                results["tool_results"] += html.lower().count(domain)
+            # 提取域名
+            domains = re.findall(r'https?://([^/]+)', html)
+            unique_domains = []
+            for d in domains:
+                d = d.replace('www.', '')
+                if d not in unique_domains and len(d) < 50:
+                    unique_domains.append(d)
             
-            # 检测论坛结果
-            forum_domains = ["reddit.com", "stackoverflow", "quora", "forum"]
-            for domain in forum_domains:
-                results["forum_results"] += html.lower().count(domain)
+            results['competitors'] = unique_domains[:5]
             
-            # 提取相关查询
-            related = re.findall(r'">([^<]+)</a>', html)
-            results["related_queries"] = related[:5]
+            # 检测巨头
+            for domain in unique_domains:
+                if any(g in domain for g in GIANTS):
+                    results['has_giant'] = True
+                    break
             
-            # 检测是否问答型
-            question_words = ["how", "what", "why", "where", "when"]
-            if any(qw in keyword.lower() for qw in question_words):
-                results["is_question"] = True
+            # 检测弱竞争者
+            for domain in unique_domains:
+                if any(w in domain for w in WEAK_COMPETITORS):
+                    results['has_weak'] = True
+                    break
             
-            # 计算商业意图
-            results["commercial_intent"] = min(100,
-                results["tool_results"] * 5 + 
-                results["forum_results"] * 3
-            )
+            # 商业意图
+            tool_count = sum(1 for d in unique_domains for t in ['tool', 'app', 'software'] if t in d)
+            results['commercial_intent'] = min(100, tool_count * 20)
             
         except Exception as e:
             logger.debug(f"Google SERP error for '{keyword}': {e}")
         
         return results
     
-    def detect_user_intent(self, keyword: str) -> Dict:
-        """深挖用户意图（用户真正想做什么）"""
-        keyword_lower = keyword.lower()
-        
-        # 意图模式匹配
-        intent_patterns = {
-            "calculate": ["calculator", "calculate", "compute", "formula"],
-            "convert": ["converter", "convert", "to", "from", "into"],
-            "generate": ["generator", "generate", "create", "maker", "builder"],
-            "check": ["checker", "check", "verify", "validate", "test"],
-            "compare": ["vs", "versus", "compare", "difference", "alternative"],
-            "download": ["download", "downloader", "get", "save"],
-            "edit": ["editor", "edit", "modify", "change"],
-            "analyze": ["analyzer", "analyze", "analytics", "report"],
-            "track": ["tracker", "track", "monitor", "follow"],
-            "search": ["finder", "search", "find", "lookup"]
-        }
-        
-        detected = []
-        for intent, patterns in intent_patterns.items():
-            for p in patterns:
-                if p in keyword_lower:
-                    detected.append(intent)
-                    break
-        
-        # 用户目标映射
-        intent_goals = {
-            "calculate": "用户想计算某个数值",
-            "convert": "用户想转换单位/格式/语言",
-            "generate": "用户想自动生成内容",
-            "check": "用户想验证/检查某事",
-            "compare": "用户想对比选项",
-            "download": "用户想下载资源",
-            "edit": "用户想编辑/修改内容",
-            "analyze": "用户想分析数据",
-            "track": "用户想追踪/监控",
-            "search": "用户想查找信息"
-        }
-        
-        if not detected:
-            return {
-                "intent": "general",
-                "goal": "未知意图（可能是信息查询）",
-                "clarity": "低"
-            }
-        elif len(detected) == 1:
-            return {
-                "intent": detected[0],
-                "goal": intent_goals.get(detected[0], "执行具体操作"),
-                "clarity": "高"
-            }
-        else:
-            return {
-                "intent": "+".join(detected),
-                "goal": f"复合需求：{' + '.join(detected)}",
-                "clarity": "中"
-            }
-    
     def analyze_keyword(self, keyword: str) -> Dict:
-        """综合深度分析单个关键词"""
+        """综合深度分析"""
         logger.info(f"   🔍 深度分析: {keyword}")
         
-        # Reddit API 搜索
-        reddit = self.search_reddit_api(keyword)
-        
-        # Google SERP 分析
+        # 获取数据
+        reddit = self.search_reddit_real(keyword)
         google = self.analyze_google_serp(keyword)
         
-        # 用户意图深挖
-        intent = self.detect_user_intent(keyword)
+        # 5问法验证
+        validation = self.validate_demand_5_questions(keyword, reddit, google)
         
-        # 综合分析
-        analysis = {
-            "keyword": keyword,
-            "reddit": reddit,
-            "google": google,
-            "intent": intent,
-            "demand_strength": self._calc_demand_strength(reddit, google),
-            "pain_point_score": reddit.get("validation_score", 0),
-            "opportunity_score": self._calc_opportunity(reddit, google),
-            "is_tool_demand": any(t in keyword.lower() for t in ["tool", "generator", "calculator", "converter"]),
-            "is_pain_point": len(reddit.get("pain_points", [])) > 0,
-            "is_comparison": "vs" in keyword.lower() or "alternative" in keyword.lower(),
-            "is_question": google.get("is_question", False),
-            "user_goal": intent.get("goal", ""),
-            "user_intent": intent.get("intent", "")
+        # 商业价值判断
+        monetization_score = self._calc_monetization(keyword)
+        
+        # 痛点分数
+        pain_score = self._calc_pain(keyword, reddit)
+        
+        return {
+            'keyword': keyword,
+            'validation': validation,
+            'reddit': reddit,
+            'google': google,
+            'monetization_score': monetization_score,
+            'pain_score': pain_score,
+            'demand_strength': self._calc_demand_strength(validation, reddit, google),
+            'is_valid_transactional': validation['intent_type'] == 'transactional' and validation['is_valid'],
+            'is_pain_point': validation['pain_count'] > 0
         }
-        
-        return analysis
     
-    def _calc_demand_strength(self, reddit: Dict, google: Dict) -> str:
-        """计算需求强度"""
-        score = 0
-        
-        if reddit.get("total_mentions", 0) > 5:
-            score += 3
-        elif reddit.get("total_mentions", 0) > 0:
-            score += 1
-        
-        if reddit.get("validation_score", 0) >= 50:
-            score += 3
-        elif reddit.get("validation_score", 0) >= 20:
-            score += 1
-        
-        if google.get("forum_results", 0) > 3:
-            score += 2
-        
-        if google.get("is_question"):
-            score += 1
-        
-        if score >= 6:
-            return "HIGH"
-        elif score >= 3:
-            return "MEDIUM"
-        else:
-            return "LOW"
-    
-    def _calc_opportunity(self, reddit: Dict, google: Dict) -> int:
-        """计算机会分数"""
+    def _calc_monetization(self, keyword: str) -> Dict:
+        """计算商业价值"""
         score = 50
+        signals = []
+        keyword_lower = keyword.lower()
         
-        if google.get("tool_results", 0) > 0:
+        # B2B
+        for signal in TRANSACTIONAL_SIGNALS['b2b']:
+            if signal in keyword_lower:
+                signals.append(f"B2B: {signal}")
+                score += 20
+                break
+        
+        # Transactional
+        for signal in TRANSACTIONAL_SIGNALS['tool']:
+            if signal in keyword_lower:
+                signals.append(f"工具: {signal}")
+                score += 15
+                break
+        
+        # 免费
+        if 'free' in keyword_lower:
+            signals.append("免费")
+            score += 5
+        
+        return {'score': min(100, score), 'signals': signals}
+    
+    def _calc_pain(self, keyword: str, reddit: Dict) -> Dict:
+        """计算痛点分数"""
+        score = 50
+        keyword_lower = keyword.lower()
+        keywords = []
+        level = 'low'
+        
+        for pain in self.pain_keywords:
+            if pain in keyword_lower:
+                keywords.append(pain)
+                score += 15
+                level = 'critical' if 'struggling' in pain or 'fix' in pain else 'medium'
+        
+        if reddit.get('solution_seeking', 0) > 0:
+            score += 10
+            level = 'critical'
+        
+        return {'score': min(100, score), 'level': level, 'keywords': keywords[:3]}
+    
+    def _calc_demand_strength(self, validation: Dict, reddit: Dict, google: Dict) -> str:
+        """计算需求强度"""
+        score = validation['score']
+        
+        if reddit.get('total_mentions', 0) > 5:
+            score += 20
+        elif reddit.get('total_mentions', 0) > 0:
             score += 10
         
-        if google.get("forum_results", 0) > 2:
-            score += 10
+        if google.get('has_weak') and not google.get('has_giant'):
+            score += 25
         
-        if reddit.get("total_mentions", 0) > 3:
-            score += 10
-        
-        if reddit.get("validation_score", 0) >= 50:
-            score += 15
-        
-        return min(100, score)
+        if score >= 80:
+            return 'HIGH'
+        elif score >= 50:
+            return 'MEDIUM'
+        else:
+            return 'LOW'
     
     def analyze_batch(self, keywords: List[str]) -> Dict[str, Dict]:
         """批量深度分析"""
@@ -310,10 +346,9 @@ class DeepSearchAnalyzer:
                 analysis = self.analyze_keyword(keyword)
                 results[keyword] = analysis
                 
-                demand = analysis["demand_strength"]
-                pain = "⚠️" if analysis["is_pain_point"] else ""
-                mentions = analysis["reddit"].get("total_mentions", 0)
-                logger.info(f"   {i}/{len(keywords)} {keyword}: {demand} {pain} (讨论:{mentions})")
+                status = "✅" if analysis['is_valid_transactional'] else "⚠️"
+                demand = analysis['demand_strength']
+                logger.info(f"   {i}/{len(keywords)} {keyword}: {demand} {status}")
                 
             except Exception as e:
                 logger.error(f"分析失败 '{keyword}': {e}")
@@ -326,26 +361,5 @@ class DeepSearchAnalyzer:
 # 便捷函数
 def deep_search(keywords: List[str]) -> Dict[str, Dict]:
     """执行深度搜索"""
-    analyzer = DeepSearchAnalyzer()
+    analyzer = DeepSearchAnalyzerV4()
     return analyzer.analyze_batch(keywords)
-
-
-if __name__ == "__main__":
-    test_keywords = [
-        "free image converter tool",
-        "python json formatter online",
-        "website seo checker free",
-        "logo maker without watermark",
-        "password generator strong"
-    ]
-    
-    results = deep_search(test_keywords)
-    
-    for kw, data in results.items():
-        print(f"\n{'='*60}")
-        print(f"关键词: {kw}")
-        print(f"需求强度: {data.get('demand_strength', 'N/A')}")
-        print(f"痛点分数: {data.get('pain_point_score', 0)}")
-        print(f"机会分数: {data.get('opportunity_score', 0)}")
-        print(f"用户意图: {data.get('user_intent', '')}")
-        print(f"用户目标: {data.get('user_goal', '')}")

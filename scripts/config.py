@@ -1,65 +1,119 @@
 #!/usr/bin/env python3
 """
-配置参数 - V3 优化版
+Profit Hunter Ultimate V4 - 需求真伪识别 + 商业价值判断
+=========================================================
+
+核心理念：
+1. 需求真伪识别 (5问法) - 区分 Info vs Transactional
+2. 商业价值判断 - 止痛药 vs 维生素, B2B信号
+3. 增长黑客策略 - pSEO潜力 + 截流建议
+4. GPTS锚定基准 - 相对比率而非绝对值
+5. 痛点=钱 - PAIN_TRIGGERS 专门盯着痛苦信号
 """
 
-# 评分阈值（V3: 65 分，更容易推荐）
-THRESHOLDS = {
-    "BUILD_NOW": 65,       # 立即做阈值
-    "WATCH": 45,           # 观察阈值
-    "MIN_GPTS_RATIO": 0.03,  # 最低 GPTs 比值
-}
+from datetime import datetime
+from typing import Dict, List, Set, Tuple
+import re
 
-# SERP 弱竞争者（降维打击目标）
-SERP_WEAK_COMPETITORS = [
-    "reddit.com", "quora.com", "stackoverflow.com",
-    "medium.com", "dev.to", "blogger.com", "wordpress.com"
-]
+# ============ 配置区 ============
 
-# SERP 巨头（避开）
-SERP_GIANTS = [
-    "google.com", "microsoft.com", "adobe.com",
-    "canva.com", "figma.com", "notion.so"
-]
-
-# 痛点触发词
+# ==================== 痛点信号词 (痛点 = 钱) ====================
 PAIN_TRIGGERS = {
-    "strong": [
-        "struggling with", "how to fix", "error", "problem",
-        "cannot", "doesn't work", "failed", "help",
-        "urgent", "asap", "immediately"  # V3 新增：紧急需求
+    # 强烈痛点 (得分高)
+    "critical": [
+        "struggling with", "how to fix", "error", "broken", "not working",
+        "failed", "manual", "tedious", "time consuming", "slow", "cannot",
+        "doesn't work", "help me", "problem with", "annoying", "frustrating",
+        "wish there was", "why is there no", "tired of", "waste of time"
     ],
+    # 中度痛点
     "medium": [
-        "best way", "how to create", "tutorial", "guide"
+        "difficult", "hard to", "complicated", "confusing", "confused",
+        "looking for", "need a tool", "searching for", "best way to"
     ],
-    "tool": [
-        "calculator", "generator", "converter", "tool",
-        "maker", "creator", "builder"
+    # 修复/解决类
+    "fix": [
+        "fix", "repair", "recover", "restore", "solve", "resolve", "heal"
     ]
 }
 
-# 意图信号
-INTENT_SIGNALS = {
-    "tool": ["calculator", "generator", "converter", "tool", "maker", "checker"],
-    "对比": ["vs", "alternative", "better than", "compare"],
-    "B2B": ["bulk", "api", "export", "team", "business", "enterprise"],
-    "速度": ["fast", "quick", "instant", "auto", "automatic", "easy"],
-    "长尾": 2,  # 2个词以上
+# ==================== 商业意图信号 ====================
+# Transactional 意图 (想解决问题/付费)
+TRANSACTIONAL_SIGNALS = {
+    "tool": [
+        "tool", "app", "software", "generator", "converter", "calculator",
+        "maker", "creator", "builder", "editor", "downloader", "online",
+        "free", "without login", "no signup", "instant", "quick"
+    ],
+    "b2b": [  # B2B = 高客单价
+        "bulk", "batch", "api", "export", "team", "enterprise", "multiple",
+        "mass", "automation", "automatic", "workflow", "integration"
+    ],
+    "solve": [
+        "solve", "remove", "delete", "clean", "optimize", "fix", "repair"
+    ]
 }
 
-# 评分权重（V3 标准）
+# Info 意图 (只是看看) - 权重降低
+INFO_SIGNALS = [
+    "what is", "how to", "guide", "tutorial", "learn", "understand",
+    "examples", "tips", "best", "review", "comparison"
+]
+
+# ==================== 竞争分析 ====================
+# 弱竞争者 (降维打击目标)
+WEAK_COMPETITORS = [
+    "reddit.com", "quora.com", "stackoverflow.com", "medium.com",
+    "dev.to", "blogger.com", "wordpress.com", "github.com",
+    "youtube.com", "wikipedia.org", "pinterest.com"
+]
+
+# 巨头 (避开)
+GIANTS = [
+    "google.com", "microsoft.com", "adobe.com", "canva.com", "figma.com",
+    "notion.so", "airtable.com", "shopify.com", "amazon.com", "apple.com"
+]
+
+# ==================== GPTS 锚定基准 ====================
+# GPTS 搜索量作为基准线
+GPTS_BENCHMARK = {
+    "base_ratio": 0.05,    # 5% = 入门门槛
+    "good_ratio": 0.10,    # 10% = 好机会
+    "great_ratio": 0.20,   # 20% = 绝佳机会
+    "excellent_ratio": 0.50  # 50% = 极品
+}
+
+# ==================== 评分权重 ====================
 WEIGHTS = {
-    "trend": 0.25,       # GPTs 热度
-    "intent": 0.35,      # 需求强度（提高权重）
-    "competition": 0.25, # 竞争度
-    "buildability": 0.15, # 可实现性
+    "demand_validation": 0.25,   # 需求真伪验证
+    "monetization": 0.25,        # 商业价值
+    "competition": 0.20,         # 竞争环境
+    "pain_score": 0.20,          # 痛点深度
+    "trend": 0.10                # 趋势
 }
 
-# 输出目录
-DATA_DIR = "data"
+# ==================== 阈值 ====================
+THRESHOLDS = {
+    "BUILD_NOW": 70,   # 70分以上立即做
+    "WATCH": 50,       # 50-70分观察
+    "PAIN_SCORE_MIN": 40  # 痛点分数最低要求
+}
 
-# 最大候选词数量（V3: 全部，不采样）
-MAX_CANDIDATES = 500
+# ==================== pSEO 潜力词根 ====================
+PSEO_PATTERNS = [
+    ("convert", ["to", "from", "into"]),
+    ("generate", ["for", "with", "without"]),
+    ("remove", ["from", "background", "watermark"]),
+    ("extract", ["from", "audio", "text"]),
+    ("download", ["from", "video", "audio"]),
+    ("batch", ["process", "convert", "transform"]),
+    ("free", ["online", "tool", "app"]),
+    ("automatic", ["tool", "generator", "workflow"])
+]
 
-# 降维打击加成分数
-DIMENSION_ATTACK_BONUS = 20
+# ==================== 变现建议 ====================
+MONETIZATION_TYPES = {
+    "b2b": ["API服务", "企业订阅", "团队版", "导出收费"],
+    "b2c": ["广告变现", "Freemium", "一次性购买", "联盟营销"],
+    "saas": ["订阅制", "按量付费", "功能付费", "白标方案"]
+}

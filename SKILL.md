@@ -1,177 +1,138 @@
----
-name: profit-hunter-ultimate
-description: "终极版蓝海关键词自动猎取系统。整合 Google Autocomplete (Alphabet Soup)、Google Trends 二级深挖、GPTs 基准对比、用户意图深挖、Playwright SERP 降维打击分析。自动识别竞争度、痛点强度、用户真正意图、商业价值。每 6 小时自动运行，输出高质量'立即做'机会清单。核心升级：降维打击检测（前3名有论坛=机会）、用户意图分析（不只看信号，还看用户真正想做什么）、显示 GPTs 热度比、列全关键词（不采样）。Use when: 'find profitable keywords', 'blue ocean opportunities', 'serp analysis', 'user intent mining', '/hunt-ultimate' command."
-license: MIT
----
+# Profit Hunter ULTIMATE V4 - 蓝海关键词智能猎取系统
 
-# 💎 Profit Hunter ULTIMATE - 终极版蓝海关键词猎取系统
+## 核心能力
 
-## 快速开始
+### 1. 需求真伪识别 (Demand Validation) - 5问法
 
-```bash
-cd /root/.nvm/versions/node/v22.22.0/lib/node_modules/clawdbot/skills/profit-hunter-ultimate/scripts
+不再只看热度，而是用5个问题验证需求是否真实：
 
-# 快速测试（30个关键词）
-python test_ultimate.py
+```
+Q1: 是 Info 还是 Transactional 意图?
+   - Transactional (工具/解决方案) → ✅
+   - Info (只是看看) → ⚠️ 降权
 
-# 完整运行
-python profit_hunter.py --trends --playwright --max 500
+Q2: 是否有工具/解决方案信号?
+   - tool, app, software, generator → ✅
 
-# 定时任务（每6小时）
-python scheduler.py
+Q3: 用户是否在抱怨?
+   - struggling with, fix, error, manual → ✅✅ 痛点 = 钱
+
+Q4: 是否有付费意愿?
+   - Reddit讨论活跃、solution seeking → ✅
+
+Q5: 竞争是否激烈?
+   - 巨头存在 → 🔴 撤退
+   - 弱竞争者 (Reddit/博客) → 💎 降维打击机会
 ```
 
-## 脚本说明
+### 2. 商业价值判断 (Monetization Signal)
 
-### scripts/profit_hunter.py
-主分析脚本，支持以下参数：
+区分"止痛药"和"维生素"：
 
-| 参数 | 说明 | 默认值 |
-|-----|------|-------|
-| `--trends` | 启用 Google Trends 分析 | False |
-| `--playwright` | 启用 Playwright SERP 分析 | False |
-| `--max` | 最大关键词数量 | 500 |
-| `--seed` | 种子词，逗号分隔 | 从 words.md 读取 |
+| 类型 | 信号词 | 商业价值 |
+|------|--------|----------|
+| 止痛药 | fix, error, broken, struggling | ⭐⭐⭐ 高客单价 |
+| 维生素 | how to, guide, tutorial | ⭐ 低客单价 |
+| B2B | bulk, API, export, team | ⭐⭐⭐ 高客单价 |
+| 工具 | tool, generator, converter | ⭐⭐ 中等 |
 
-**示例:**
-```bash
-python profit_hunter.py                           # 快速模式
-python profit_hunter.py --trends                  # + Trends
-python profit_hunter.py --trends --playwright     # 终极版
-python profit_hunter.py --max 100 --seed "ai,ml"  # 自定义
+### 3. GPTS 锚定基准
+
+不再看绝对搜索量，而是和 "GPTs" 基准词对比：
+
+- **5%**: 入门门槛
+- **10%**: 好机会
+- **20%**: 绝佳机会
+- **50%**: 极品机会
+
+### 4. 痛点 = 钱
+
+痛点信号词库 (PAIN_TRIGGERS):
+
+```
+critical: struggling with, how to fix, error, broken, not working, manual, tedious
+medium: difficult, hard to, looking for, need a tool
+fix: fix, repair, recover, solve
 ```
 
-### scripts/scheduler.py
-定时调度器，支持以下参数：
+### 5. 增长黑客策略
 
-| 参数 | 说明 | 默认值 |
-|-----|------|-------|
-| `--interval` | 运行间隔（小时） | 6 |
-| `--immediate` | 立即运行一次 | False |
-| `--run-once` | 只运行一次，不循环 | False |
+- **pSEO 潜力评估**: 检测能否裂变出1000个页面
+- **截流建议**: 竞品词直接做对比页
+- **降维打击**: 识别前三名是论坛/博客的机会
 
-**示例:**
-```bash
-python scheduler.py                    # 每6小时运行
-python scheduler.py --interval 12      # 每12小时
-python scheduler.py --immediate        # 立即+循环
-python scheduler.py --run-once         # 只运行一次
+## 工作流程
+
+```
+1. 挖词 (Alphabet Soup)
+   ↓
+2. 筛选 (痛点识别 + 商业意图)
+   ↓
+3. 验证 (5问法需求真伪)
+   ↓
+4. 竞争分析 (SERP 对手是谁?)
+   ↓
+5. GPTS 锚定 (相对比率)
+   ↓
+6. 决策 (BUILD NOW / WATCH / DROP)
 ```
 
-### scripts/test_ultimate.py
-快速测试脚本，使用默认参数测试完整流程。
+## 评分体系
 
-### words.md
-种子词配置文件，每行一个关键词。系统会基于这些词通过 Alphabet Soup 扩展出大量候选词。
+| 维度 | 权重 | 说明 |
+|------|------|------|
+| 需求验证 | 25% | 5问法结果 |
+| 商业价值 | 25% | B2B/Transactional |
+| 痛点深度 | 20% | 痛点信号强度 |
+| 竞争环境 | 20% | 弱竞争 = 机会 |
+| 趋势 | 10% | 相对 GPTS 比率 |
+
+## 使用方法
+
+```bash
+# 基本运行
+python3 profit_hunter_ultimate.py
+
+# 启用深度验证
+python3 profit_hunter_ultimate.py --deep-search
+
+# 启用 Playwright SERP 分析
+python3 profit_hunter_ultimate.py --playwright
+
+# 定时调度器 (每天4次: 00:00, 06:00, 12:00, 18:00)
+python3 smooth_scheduler.py
+```
+
+## 核心文件
+
+| 文件 | 说明 |
+|------|------|
+| `config.py` | 配置：痛点词库、商业信号、阈值 |
+| `profit_hunter_ultimate.py` | 主程序 |
+| `scorer.py` | 评分器 V4：需求验证+商业价值 |
+| `deep_search.py` | 深度分析：5问法验证 |
+| `serp_analyzer.py` | SERP 竞争分析 |
+| `smooth_scheduler.py` | 定时调度器 |
+| `generate_report.py` | HTML 报告生成 |
+| `words.md` | 种子词列表 |
+
+## 输出示例
+
+```
+🔥 Top 1: batch audio to text for journalists free
+   需求验证: ✅ Transactional + 痛点
+   痛点分数: 85 (critical)
+   竞争环境: 🟢 弱 (前三名全是旧博客)
+   GPTS对比: 12.5% (远超5%门槛)
+   决策: 🔴 BUILD NOW 💎
+   变现建议: B2B模式: API服务/企业订阅
+```
 
 ## 核心理念
 
-```
-降维打击 > 正面竞争
-小而美 > 大而全
-真需求 > 伪需求
-自动化 > 手动
-```
+> "痛点 = 钱。止痛药比维生素更值钱。"
 
-**唯一目标**：找到那些**前3名是论坛/博客**的关键词，做一个工具站轻松占据首页。
-
-## 评分算法
-
-```
-Final Score = Trend×25% + Intent×35% + Competition×25% + Buildability×15%
-```
-
-| 评分范围 | 决策 |
-|---------|------|
-| ≥ 65 | 🔴 BUILD NOW |
-| 45-65 | 🟡 WATCH |
-| < 45 | ❌ DROP |
-
-## 输出文件
-
-```
-data/
-├── ultimate_final_results.csv  # 最终结果（最重要）
-├── step0_suggest_keywords.csv  # Google Suggest 原始数据
-├── step1_trends_deep.csv       # Trends 飙升词
-├── step2_gpts_comparison.csv   # GPTs 对比数据
-└── step3_serp_analysis.csv     # SERP 竞争分析
-```
-
-## 安装依赖
-
-```bash
-# 基础依赖
-pip install requests pandas pytrends schedule openpyxl
-
-# 可选：Playwright（用于真实 SERP 分析）
-pip install playwright
-playwright install chromium
-```
-
-## 关键字段说明
-
-| 字段 | 含义 | 示例 |
-|------|------|------|
-| `keyword` | 关键词 | calculator online |
-| `final_score` | 最终评分 | 80.8 |
-| `decision` | 决策 | 🔴 BUILD NOW |
-| `avg_ratio` | vs GPTs 热度比 | 17.2% |
-| `user_intent` | 用户意图类型 | calculate, convert |
-| `user_goal` | 用户真正想做什么 | 复合需求：calculate + convert |
-| `intent_clarity` | 意图清晰度 | 高/中/低 |
-| `降维打击` | 是否有降维打击机会 | True/False |
-
-## 降维打击原理
-
-如果 Google 前3名有 Reddit/Quora/Medium，但没有大厂网站，这就是**降维打击机会**：
-
-```
-场景：aura calculator
-问题：用户有需求，但首页全是 Reddit 帖子
-机会：做一个简单的计算器工具站
-结果：轻松占据首页 → 流量 → 广告收入
-```
-
-## 版本对比
-
-| 特性 | 基础版 | ULTIMATE |
-|-----|-------|----------|
-| Autocomplete | ✅ | ✅ 优化 |
-| Trends | ❌ | ✅ 二级深挖 |
-| GPTs 对比 | ❌ | ✅ 必选 |
-| SERP 分析 | 规则 | Playwright |
-| 评分阈值 | 75 | 65 |
-| 立即做词数 | 0 | 29+ |
-
-## 故障排查
-
-**问题：没有"立即做"的词**
-- 降低 `--max` 参数值
-- 更换种子词（words.md）
-- 启用 `--trends` 和 `--playwright`
-
-**问题：Google Trends 限频**
-- 减少种子词数量
-- 增加运行间隔
-- 使用 `--run-once` 模式
-
-**问题：Playwright 安装失败**
-```bash
-pip install playwright
-playwright install chromium
-# 或不使用 --playwright 参数
-```
-
-## 核心理念（再次强调）
-
-```
-不做大词！不做大词！不做大词！
-
-大词 = calculator, converter → 竞争激烈 ❌
-小词 + 降维打击 = aura calculator (前3名是 Reddit) → 轻松占据首页 ✅
-```
-
----
-
-**开始行动！💎🚀💰**
+- 寻找正在抱怨的用户
+- 避开巨头把持的领域
+- 找到"又老又丑"的竞争对手
+- 用现代 UI 实现降维打击
