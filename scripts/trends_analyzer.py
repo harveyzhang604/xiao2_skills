@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Google Trends 分析模块
+Google Trends 分析模块 V2
+- 支持二级 Related Queries 深挖
 """
 
 import time
@@ -8,7 +9,7 @@ from pytrends.request import TrendReq
 
 
 class TrendsAnalyzer:
-    """Google Trends 分析器"""
+    """Google Trends 分析器 V2"""
     
     def __init__(self):
         self.pytrends = TrendReq(hl='en-US', tz=360)
@@ -22,13 +23,10 @@ class TrendsAnalyzer:
                 # 构建 payload
                 self.pytrends.build_payload(
                     kw_list=[keyword],
-                    timeframe='today 3-m'  # 最近3个月
+                    timeframe='today 3-m'
                 )
                 
-                # 获取兴趣随时间变化
                 interest_over_time = self.pytrends.interest_over_time()
-                
-                # 获取相关查询
                 related_queries = self.pytrends.related_queries()
                 
                 # 飙升查询
@@ -36,10 +34,11 @@ class TrendsAnalyzer:
                 if related_queries and keyword in related_queries:
                     rising_data = related_queries[keyword].get('rising', [])
                     if rising_data is not None:
-                        rising = [q['query'] for q in rising_data.head(5).to_dict('records')]
+                        rising = [q['query'] for q in rising_data.head(10).to_dict('records')]
                 
                 # 计算趋势得分
-                score = 0
+                score = 50  # 默认50分
+                growth = 0
                 if not interest_over_time.empty:
                     recent = interest_over_time[keyword].tail(7).mean()
                     older = interest_over_time[keyword].tail(30).mean() if len(interest_over_time) > 7 else recent
@@ -50,12 +49,42 @@ class TrendsAnalyzer:
                 results[keyword] = {
                     'keyword': keyword,
                     'trend_score': score,
-                    'growth': growth if 'growth' in dir() else 0,
+                    'growth': growth,
                     'rising_queries': rising,
+                    'level': '1st',  # 一级
                     'status': 'success'
                 }
                 
-                time.sleep(1)  # 避免限频
+                # 🔥 二级深挖：对每个飙升词再查一次
+                deep_rising = []
+                for rq in rising[:5]:  # 只深挖前5个飙升词
+                    try:
+                        self.pytrends.build_payload(
+                            kw_list=[rq],
+                            timeframe='today 3-m'
+                        )
+                        sub_related = self.pytrends.related_queries()
+                        
+                        if rq in sub_related:
+                            sub_rising = sub_related[rq].get('rising', [])
+                            if sub_rising is not None:
+                                for sq in sub_rising.head(5)['query']:
+                                    if sq not in rising:  # 避免重复
+                                        deep_rising.append({
+                                            'query': sq,
+                                            'parent': rq,
+                                            'level': '2nd'
+                                        })
+                        
+                        time.sleep(2)  # 避免限频
+                    except:
+                        pass
+                
+                if deep_rising:
+                    results[keyword]['deep_rising'] = deep_rising
+                    results[keyword]['level'] = '1st+2nd'
+                
+                time.sleep(1)
                 
             except Exception as e:
                 results[keyword] = {
@@ -63,18 +92,23 @@ class TrendsAnalyzer:
                     'trend_score': 50,
                     'growth': 0,
                     'rising_queries': [],
+                    'deep_rising': [],
+                    'level': '1st',
                     'status': f'error: {str(e)}'
                 }
         
         return results
     
-    def get_rising_keywords(self, trends_data, min_growth=10):
-        """获取飙升词"""
-        rising = []
-        for data in trends_data.values():
-            if data.get('growth', 0) >= min_growth:
-                rising.append(data['keyword'])
-            # 添加飙升相关词
-            rising.extend(data.get('rising_queries', [])[:2])
+    def get_all_rising(self, trends_data):
+        """获取所有飙升词（一级 + 二级）"""
+        all_rising = []
         
-        return list(set(rising))
+        for data in trends_data.values():
+            # 一级飙升
+            all_rising.extend(data.get('rising_queries', []))
+            
+            # 二级深挖
+            for deep in data.get('deep_rising', []):
+                all_rising.append(deep['query'])
+        
+        return list(set(all_rising))

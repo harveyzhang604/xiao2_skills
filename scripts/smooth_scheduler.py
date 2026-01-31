@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Profit Hunter ULTIMATE V3 - 平滑消耗调度器
-每 8 小时运行一次，智能控制 token 消耗
+每天 4 次运行：00:00, 06:00, 12:00, 18:00
+每次 1 小时深度分析
 """
 
 import schedule
@@ -30,7 +31,7 @@ logger = logging.getLogger(__name__)
 class TokenBudget:
     """Token 预算控制 - 平滑消耗"""
     
-    def __init__(self, max_tokens_per_day=500000):  # 50万 tokens 每日
+    def __init__(self, max_tokens_per_day=2000000):
         self.max_tokens_per_day = max_tokens_per_day
         self.used_today = 0
         self.last_reset = datetime.now().date()
@@ -49,7 +50,7 @@ class TokenBudget:
             remaining = self.max_tokens_per_day - self.used_today
             logger.warning(f'⚠️ Token 预算接近限制，剩余 {remaining} tokens')
             logger.info('💤 等待 1 小时后重试...')
-            time.sleep(3600)  # 等待 1 小时
+            time.sleep(3600)
             return False
         
         return True
@@ -61,30 +62,29 @@ class TokenBudget:
 
 
 class SmoothRunner:
-    """平滑运行器 - 控制执行节奏"""
+    """平滑运行器"""
     
     def __init__(self):
-        self.token_budget = TokenBudget(max_tokens_per_day=500000)  # 每日 50万 tokens
-        self.min_interval = 8 * 3600  # 最小间隔 8 小时
+        self.token_budget = TokenBudget(max_tokens_per_day=2000000)
+        self.min_interval = 6 * 3600  # 最小间隔 6 小时
         self.last_run = None
         self.run_count = 0
     
     def estimate_tokens(self, num_keywords):
         """估算 token 消耗 - 深度搜索版本"""
-        # 基础消耗 + 每个关键词消耗（深度搜索消耗更大）
         base_tokens = 1000
-        per_keyword_tokens = 500  # 深度分析：每个关键词 500 tokens
+        per_keyword_tokens = 600  # 深度分析
         return base_tokens + (num_keywords * per_keyword_tokens)
     
     def run_job(self):
-        """执行挖掘任务 - 平滑模式"""
+        """执行挖掘任务"""
         self.run_count += 1
         now = datetime.now()
         
         # 检查最小间隔
         if self.last_run and (now - self.last_run).total_seconds() < self.min_interval:
             wait_time = self.min_interval - (now - self.last_run).total_seconds()
-            logger.info(f'⏰ 距离上次运行不足 8 小时，等待 {wait_time/3600:.1f} 小时...')
+            logger.info(f'⏰ 距离上次运行不足 6 小时，等待 {wait_time/3600:.1f} 小时...')
             return
         
         logger.info('=' * 80)
@@ -93,7 +93,7 @@ class SmoothRunner:
         logger.info('=' * 80)
         
         # 估算 token 消耗
-        estimated_tokens = self.estimate_tokens(100)  # 预估 100 个关键词
+        estimated_tokens = self.estimate_tokens(200)
         logger.info(f'📊 预估 Token 消耗: {estimated_tokens:,}')
         
         # 检查预算
@@ -102,25 +102,23 @@ class SmoothRunner:
             return
         
         try:
-            # 导入并执行
             sys.path.insert(0, str(Path(__file__).parent))
             from profit_hunter_ultimate import run_pipeline
             
-            # 创建参数 - 启用深度搜索
             class Args:
                 trends = True
-                playwright = True  # ✅ 启用真实 SERP 分析
-                deep_search = True  # ✅ 新增：深度社区搜索
-                max = 100  # 控制数量（深度分析消耗大）
+                playwright = True
+                deep_search = True  # ✅ 深度社区搜索
+                max = 200
                 trends_only = False
-                quiet = False  # 显示详细进度
+                quiet = False
             
             args = Args()
             
             # 执行挖掘
             results = run_pipeline(args)
             
-            # 统计 BUILD NOW 数量
+            # 统计 BUILD NOW
             build_now = [r for r in results if 'BUILD NOW' in r.get('decision', '')]
             
             # 实际消耗
@@ -150,39 +148,50 @@ class SmoothRunner:
         
         logger.info('\n🔥 本次 Top 5 机会：')
         for i, kw in enumerate(build_now[:5], 1):
-            logger.info(f'   {i}. {kw["keyword"]} ({kw["final_score"]}分) | {kw.get("user_intent", "N/A")}')
+            logger.info(f'   {i}. {kw["keyword"]} ({kw["final_score"]}分)')
+            logger.info(f'      意图: {kw.get("user_intent", "N/A")} | 目标: {kw.get("user_goal", "")}')
 
 
 def main():
     """主函数"""
     print('=' * 80)
-    print('💎 Profit Hunter ULTIMATE V3 - 平滑消耗调度器')
+    print('💎 Profit Hunter ULTIMATE V3 - 深度分析调度器')
     print('=' * 80)
-    print('\n⏰ 计划任务：每 8 小时运行一次')
-    print('📊 Token 预算：每日 500,000 tokens（平滑消耗）')
+    print('\n⏰ 计划任务：每天 4 次（00:00, 06:00, 12:00, 18:00）')
+    print('📊 Token 预算：每日 2,000,000 tokens（深度详细搜索）')
     print('🛡️  保护措施：预算不足自动延迟执行')
     print('\n按 Ctrl+C 停止\n')
     
     runner = SmoothRunner()
     
-    # 计划每 8 小时运行
-    schedule.every(8).hours.do(runner.run_job)
+    # 设置固定时间调度（00:00, 06:00, 12:00, 18:00）
+    schedule.every().day.at("00:00").do(runner.run_job)
+    schedule.every().day.at("06:00").do(runner.run_job)
+    schedule.every().day.at("12:00").do(runner.run_job)
+    schedule.every().day.at("18:00").do(runner.run_job)
+    
+    logger.info('📅 调度器已启动！运行时间：')
+    logger.info('   • 00:00 (深夜)')
+    logger.info('   • 06:00 (早晨)')
+    logger.info('   • 12:00 (中午)')
+    logger.info('   • 18:00 (傍晚)')
+    logger.info('')
     
     # 立即运行一次（首次）
     logger.info('\n🎯 立即执行首次挖掘...')
     runner.run_job()
     
     # 主循环
-    logger.info('\n⏳ 等待下一个运行时间...')
+    logger.info('\n⏳ 等待下次运行时间...')
     while True:
         schedule.run_pending()
-        time.sleep(60)  # 每分钟检查一次
+        time.sleep(60)
         
         # 显示下次运行时间
         next_run = schedule.next_run()
         if next_run:
             wait = (next_run - datetime.now()).total_seconds()
-            if wait > 0 and wait < 3600:  # 小于 1 小时时显示
+            if wait > 0 and wait < 3600:
                 print(f'\r⏰ 下次运行: {next_run.strftime("%Y-%m-%d %H:%M")} ({wait/60:.0f}分钟后)', end='', flush=True)
 
 
