@@ -1,50 +1,21 @@
-﻿keyword,final_score,decision,user_intent,user_goal,demand_strength,pain_point_score,opportunity_score,is_pain_point,is_tool_demand,is_comparison,降维打击,avg_ratio,competition
-free image converter tool,94,🔴 BUILD NOW,convert,用户想convert某物,MEDIUM,49,68,False,True,False,False,0.12196177374298398,LOW
-online json formatter,64,🟡 WATCH,format,用户想format某物,HIGH,55,79,False,False,False,False,0.05932993572521447,MEDIUM
-website seo checker free,84,🔴 BUILD NOW,check,用户想check某物,LOW,22,89,False,False,False,False,0.047359632485716986,MEDIUM
-logo maker without watermark,89,🔴 BUILD NOW,create,用户想create某物,LOW,49,77,False,False,False,False,0.04450266879260949,MEDIUM
-password generator strong,74,🔴 BUILD NOW,generate,用户想generate某物,HIGH,51,85,False,True,False,False,0.06638959439057714,MEDIUM
-csv to json converter online,89,🔴 BUILD NOW,convert,用户想convert某物,MEDIUM,42,59,True,True,False,False,0.11461854434309952,LOW
-markdown to html converter,87,🔴 BUILD NOW,convert,用户想convert某物,MEDIUM,59,70,True,True,False,False,0.06673784997001411,LOW
-youtube video downloader free,90,🔴 BUILD NOW,general,用户想general某物,HIGH,27,75,True,False,False,True,0.11211497506266378,WEAK
-image compression tool online,100,🔴 BUILD NOW,tool,用户想tool某物,HIGH,46,84,False,True,False,False,0.1487803896196556,LOW
-text to speech generator,100,🔴 BUILD NOW,generate,用户想generate某物,HIGH,69,76,False,True,False,True,0.10805417489398805,LOW
-color palette generator free,100,🔴 BUILD NOW,generate,用户想generate某物,HIGH,53,66,False,True,False,False,0.024814367775281794,WEAK
-favicon generator online,76,🔴 BUILD NOW,generate,用户想generate某物,MEDIUM,56,61,False,True,False,False,0.06647303166811908,LOW
-robots txt generator,86,🔴 BUILD NOW,generate,用户想generate某物,MEDIUM,43,70,True,True,False,True,0.14414278640116138,LOW
-sitemap xml generator,79,🔴 BUILD NOW,generate,用户想generate某物,MEDIUM,71,66,False,True,False,False,0.10730888038435686,MEDIUM
-meta tag generator seo,92,🔴 BUILD NOW,generate,用户想generate某物,HIGH,37,52,True,True,False,True,0.10969022337969926,LOW
-url shortener free online,83,🔴 BUILD NOW,general,用户想general某物,MEDIUM,36,56,True,False,False,False,0.0567986281383525,WEAK
-base64 encoder decoder,55,🟡 WATCH,decode,用户想decode某物,MEDIUM,33,64,False,False,False,False,0.12967093660999,LOW
-json to csv converter,86,🔴 BUILD NOW,convert,用户想convert某物,HIGH,67,62,True,True,False,True,0.13721741053619713,MEDIUM
-xml to json converter,100,🔴 BUILD NOW,convert,用户想convert某物,HIGH,66,50,False,True,False,True,0.14201442897065397,MEDIUM
-timestamp converter online,86,🔴 BUILD NOW,convert,用户想convert某物,MEDIUM,78,80,True,True,False,True,0.03563350034130362,WEAK
-case converter tool,83,🔴 BUILD NOW,convert,用户想convert某物,MEDIUM,51,62,False,True,False,False,0.10065309898990041,LOW
-word counter online free,82,🔴 BUILD NOW,general,用户想general某物,HIGH,27,70,False,False,False,False,0.05328578269517023,MEDIUM
-character count tool,85,🔴 BUILD NOW,tool,用户想tool某物,HIGH,61,74,False,True,False,True,0.09608172324451848,WEAK
-Lorem Ipsum generator,82,🔴 BUILD NOW,generate,用户想generate某物,MEDIUM,39,66,True,True,False,True,0.11000792714433323,MEDIUM
-credit card generator fake,75,🔴 BUILD NOW,generate,用户想generate某物,HIGH,59,87,False,True,False,True,0.06945432579118627,MEDIUM
-uuid generator online,83,🔴 BUILD NOW,generate,用户想generate某物,MEDIUM,23,80,True,True,False,False,0.12906746550333417,WEAK
-random password generator,70,🔴 BUILD NOW,generate,用户想generate某物,HIGH,48,76,True,True,False,True,0.06720257409682777,WEAK
-hash generator md5 sha1,84,🔴 BUILD NOW,generate,用户想generate某物,HIGH,33,85,True,True,False,False,0.11582464881420168,LOW
-diff checker online,77,🔴 BUILD NOW,check,用户想check某物,HIGH,75,55,False,False,False,False,0.04719352447275082,MEDIUM
-json validator free,73,🔴 BUILD NOW,general,用户想general某物,LOW,22,56,True,False,False,False,0.13615403607379095,MEDIUM
-css minifier online,66,🔴 BUILD NOW,general,用户想general某物,LOW,24,78,True,False,False,True,0.08951078888462106,LOW
-html minifier tool,63,🟡 WATCH,tool,用户想tool某物,MEDIUM,75,56,True,True,False,True,0.027059235146493707,MEDIUM
-javascript obfuscator free,81,🔴 BUILD NOW,general,用户想general某物,MEDIUM,37,60,True,False,False,True,0.04136421112338988,MEDIUM
-base64 image converter,81,🔴 BUILD NOW,convert,用户想convert某物,MEDIUM,22,90,True,True,False,False,0.045293754772826586,WEAK
-png to jpg converter free,97,🔴 BUILD NOW,convert,用户想convert某物,HIGH,43,76,False,True,False,False,0.09101760035623438,MEDIUM
-jpg to png converter online,100,🔴 BUILD NOW,convert,用户想convert某物,HIGH,22,88,True,True,False,False,0.1475112573060689,LOW
-webp to png converter,84,🔴 BUILD NOW,convert,用户想convert某物,MEDIUM,79,77,False,True,False,False,0.11527498122876992,LOW
-ico converter favicon,87,🔴 BUILD NOW,convert,用户想convert某物,HIGH,45,52,False,True,False,True,0.040568908017961494,MEDIUM
-pdf to text extractor,70,🔴 BUILD NOW,general,用户想general某物,MEDIUM,74,82,True,False,False,True,0.1004516500828534,WEAK
-word to pdf converter free,100,🔴 BUILD NOW,convert,用户想convert某物,MEDIUM,66,83,False,True,False,True,0.109614562492885,WEAK
-excel to json converter,79,🔴 BUILD NOW,convert,用户想convert某物,HIGH,28,68,False,True,False,False,0.06829382302713172,LOW
-sql formatter online,65,🔴 BUILD NOW,format,用户想format某物,LOW,70,89,True,False,False,False,0.05333436897604253,WEAK
-regex tester free,88,🔴 BUILD NOW,general,用户想general某物,LOW,40,89,True,False,False,True,0.02532680773922264,MEDIUM
-jwt decoder online,62,🟡 WATCH,decode,用户想decode某物,MEDIUM,22,60,False,False,False,True,0.07993272121909278,WEAK
-curl command generator,90,🔴 BUILD NOW,generate,用户想generate某物,HIGH,35,54,True,True,False,False,0.13341583515952454,WEAK
-nginx config generator,77,🔴 BUILD NOW,generate,用户想generate某物,HIGH,28,63,False,True,False,False,0.04116631929763249,LOW
-dockerfile generator,95,🔴 BUILD NOW,generate,用户想generate某物,HIGH,55,82,False,True,False,False,0.06094867697762105,MEDIUM
-gitignore generator,87,🔴 BUILD NOW,generate,用户想generate某物,HIGH,58,79,False,True,False,True,0.06857341189624583,WEAK
-license mit generator,78,🔴 BUILD NOW,generate,用户想generate某物,HIGH,24,75,False,True,False,False,0.09571836186308726,MEDIUM
+﻿keyword,final_score,decision,intent_type,is_valid,pain_score,pain_level,pain_keywords,competition,gpts_ratio,gpts_comparison,降维打击,is_b2b,monetization_suggestion,demand_strength,pseo_potential
+batch audio to text for journalists free,95,🟡 WATCH,info,False,50,low,[],medium,0.12054948532773967,12.1%,False,True,B2B模式: API服务/企业订阅 (高客单价),HIGH,high
+how to fix error in excel automatically,90,🔴 BUILD NOW,info,True,90,critical,"['fix', 'error']",medium,0.10834465655138377,10.8%,False,False,止痛药模式: 付费工具 (痛点深=易付费),HIGH,high
+remove watermark from video ai free,60,🟡 WATCH,info,False,50,low,[],medium,0.08346707847254774,8.3%,False,False,Freemium模式: 免费基础+高级付费,MEDIUM,high
+stripe fee calculator for international payments,90,🔴 BUILD NOW 💎,info,False,50,low,[],weak,0.10810928524371745,10.8%,True,False,工具模式: 广告+增值服务,HIGH,high
+shopify review scraper bulk export,95,🔴 BUILD NOW 💎,info,False,50,low,[],weak,0.15546916055108662,15.5%,True,True,B2B模式: API服务/企业订阅 (高客单价),HIGH,high
+bulk heic to jpg converter windows 11,95,🔴 BUILD NOW,transactional,True,50,low,[],low,0.09772687598047321,9.8%,False,True,B2B模式: API服务/企业订阅 (高客单价),HIGH,high
+automatic video caption generator for youtube,70,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.09710256004518154,9.7%,False,False,工具模式: 广告+增值服务,MEDIUM,high
+convert json to csv online free tool,95,🔴 BUILD NOW 💎,transactional,True,50,low,[],weak,0.0699518332194717,7.0%,True,False,Freemium模式: 免费基础+高级付费,HIGH,high
+ai voice generator for podcast intro free,95,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.2685560008659257,26.9%,False,False,Freemium模式: 免费基础+高级付费,HIGH,high
+struggling with formatting twitter thread,85,🔴 BUILD NOW,info,True,70,medium,['struggling'],low,0.24478035157515765,24.5%,False,False,止痛药模式: 付费工具 (痛点深=易付费),HIGH,high
+find best alternative to notion for tasks,70,🟡 WATCH,info,False,50,low,[],medium,0.29519920313885717,29.5%,False,False,工具模式: 广告+增值服务,MEDIUM,high
+automatic data entry from pdf to excel,60,🟡 WATCH,info,False,50,low,[],medium,0.19083177932932793,19.1%,False,False,工具模式: 广告+增值服务,MEDIUM,high
+convert spotify playlist to mp3 batch online,95,🔴 BUILD NOW 💎,info,False,50,low,[],weak,0.05166349693672111,5.2%,True,True,B2B模式: API服务/企业订阅 (高客单价),HIGH,high
+meeting minutes generator zoom free,95,🔴 BUILD NOW,transactional,True,50,low,[],low,0.2613660083019806,26.1%,False,False,Freemium模式: 免费基础+高级付费,HIGH,high
+tracking grocery expiration dates app,70,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.054269985225810516,5.4%,False,False,工具模式: 广告+增值服务,MEDIUM,high
+text to speech generator online free,95,🔴 BUILD NOW 💎,transactional,True,50,low,[],weak,0.2511354857597364,25.1%,True,False,Freemium模式: 免费基础+高级付费,HIGH,high
+image compression tool without losing quality,90,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.20146747463707093,20.1%,False,False,工具模式: 广告+增值服务,HIGH,high
+pdf to word converter online free,95,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.27807484987663467,27.8%,False,False,Freemium模式: 免费基础+高级付费,HIGH,high
+password generator strong free,80,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.06285643398712275,6.3%,False,False,Freemium模式: 免费基础+高级付费,HIGH,medium
+logo maker without watermark free,80,🟡 WATCH,info,False,50,low,[],medium,0.2991662612390774,29.9%,False,False,Freemium模式: 免费基础+高级付费,HIGH,high
