@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit Hunter ULTIMATE V3 - 蓝海关键词报告</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e4e4e4;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        .header {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header .subtitle { font-size: 1.2em; opacity: 0.9; }
+-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin        
+        .stats-top: 25px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 120px;
+        }
+        .stat-value { font-size: 2em; font-weight: bold; }
+        .stat-label { font-size: 0.9em; opacity: 0.8; }
+        
+        .section { margin-bottom: 30px; }
+        .section-title {
+            font-size: 1.5em;
+            padding: 15px 25px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 12px 12px 0 0;
+        }
+        .section-content {
+            background: rgba(255,255,255,0.05);
+            border-radius: 0 0 12px 12px;
+            padding: 20px;
+        }
+        
+        .keyword-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        
+        .keyword-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        .keyword-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        .keyword-card.build-now {
+            border: 2px solid #00ff88;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15) 0%, rgba(0, 255, 136, 0.05) 100%);
+        }
+        .keyword-card.watch {
+            border: 2px solid #ffaa00;
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.15) 0%, rgba(255, 170, 0, 0.05) 100%);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .keyword { font-size: 1.1em; font-weight: bold; word-break: break-word; flex: 1; margin-right: 10px; }
+        
+        .score {
+            font-size: 1.4em;
+            font-weight: bold;
+            padding: 5px 12px;
+            border-radius: 8px;
+        }
+        .score.high { background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; }
+        .score.medium { background: linear-gradient(135deg, #ffaa00, #ff8800); color: #000; }
+        .score.low { background: linear-gradient(135deg, #ff4466, #ff2244); color: #fff; }
+        
+        .decision {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-bottom: 12px;
+        }
+        .decision.build { background: #00ff88; color: #000; font-weight: bold; }
+        .decision.watch { background: #ffaa00; color: #000; font-weight: bold; }
+        .decision.drop { background: #ff4466; color: #fff; }
+        
+        .meta-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+        .meta-item { background: rgba(255,255,255,0.05); padding: 8px 10px; border-radius: 6px; }
+        .meta-label { color: #888; font-size: 0.8em; }
+        .meta-value { color: #e4e4e4; margin-top: 2px; }
+        
+        .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+        .tag {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            background: rgba(102, 126, 234, 0.4);
+        }
+        .tag.pain { background: rgba(255, 68, 102, 0.4); }
+        .tag.tool { background: rgba(0, 255, 136, 0.4); }
+        .tag.dimension { background: rgba(255, 170, 0, 0.4); }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .data-table th { background: rgba(102, 126, 234, 0.3); font-weight: bold; }
+        .data-table tr:hover { background: rgba(102, 126, 234, 0.1); }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .keyword-grid { grid-template-columns: 1fr; }
+            .stats-bar { gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💎 Profit Hunter ULTIMATE V3</h1>
+            <div class="subtitle">🔍 蓝海关键词自动猎取系统 - 深度分析报告</div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value">49</div>
+                    <div class="stat-label">总关键词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #00ff88;">45</div>
+                    <div class="stat-label">🔴 BUILD NOW</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #ffaa00;">4</div>
+                    <div class="stat-label">🟡 WATCH</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">82.8</div>
+                    <div class="stat-label">平均评分</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🔥 Top 10 BUILD NOW 机会（立即开发）</div>
+            <div class="section-content">
+                <div class="keyword-grid">
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">1. free image converter tool</div>
+                            <div class="score high">94.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">convert</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">MEDIUM</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">49</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">68</div>
+                            </div>
+                        </div>
+                        <div class="tags"><span class="tag tool">🛠️ 工具需求</span></div>
+                    </div>
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">2. website seo checker free</div>
+                            <div class="score high">84.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">check</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">LOW</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">22</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">89</div>
+                            </div>
+                        </div>
+                        <div class="tags"></div>
+                    </div>
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">3. logo maker without watermark</div>
+                            <div class="score high">89.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">create</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">LOW</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">49</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">77</div>
+                            </div>
+                        </div>
+                        <div class="tags"></div>
+                    </div>
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">4. password generator strong</div>
+                            <div class="score medium">74.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">generate</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">HIGH</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">51</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">85</div>
+                            </div>
+                        </div>
+                        <div class="tags"><span class="tag tool">🛠️ 工具需求</span></div>
+                    </div>
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">5. csv to json converter online</div>
+                            <div class="score high">89.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">convert</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">MEDIUM</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">42</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">59</div>
+                            </div>
+                        </div>
+                        <div class="tags"><span class="tag pain">⚠️ 痛点需求</span><span class="tag tool">🛠️ 工具需求</span></div>
+                    </div>
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">6. markdown to html converter</div>
+                            <div class="score high">87.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">convert</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">MEDIUM</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">59</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">70</div>
+                            </div>
+                        </div>
+                        <div class="tags"><span class="tag pain">⚠️ 痛点需求</span><span class="tag tool">🛠️ 工具需求</span></div>
+                    </div>
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">7. youtube video downloader free</div>
+                            <div class="score high">90.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">general</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">HIGH</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">27</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">75</div>
+                            </div>
+                        </div>
+                        <div class="tags"><span class="tag pain">⚠️ 痛点需求</span><span class="tag dimension">💎 降维打击</span></div>
+                    </div>
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">8. image compression tool online</div>
+                            <div class="score high">100.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">tool</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">HIGH</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">46</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">84</div>
+                            </div>
+                        </div>
+                        <div class="tags"><span class="tag tool">🛠️ 工具需求</span></div>
+                    </div>
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">9. text to speech generator</div>
+                            <div class="score high">100.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">generate</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">HIGH</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">69</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">76</div>
+                            </div>
+                        </div>
+                        <div class="tags"><span class="tag tool">🛠️ 工具需求</span><span class="tag dimension">💎 降维打击</span></div>
+                    </div>
+
+                    <div class="keyword-card build-now">
+                        <div class="card-header">
+                            <div class="keyword">10. color palette generator free</div>
+                            <div class="score high">100.0</div>
+                        </div>
+                        <span class="decision build">🔴 BUILD NOW</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">generate</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">HIGH</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">痛点分数</div>
+                                <div class="meta-value">53</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">机会分数</div>
+                                <div class="meta-value">66</div>
+                            </div>
+                        </div>
+                        <div class="tags"><span class="tag tool">🛠️ 工具需求</span></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">👀 WATCH 观察名单（持续关注）</div>
+            <div class="section-content">
+                <div class="keyword-grid">
+
+                    <div class="keyword-card watch">
+                        <div class="card-header">
+                            <div class="keyword">1. online json formatter</div>
+                            <div class="score medium">64.0</div>
+                        </div>
+                        <span class="decision watch">🟡 WATCH</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">format</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">HIGH</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="keyword-card watch">
+                        <div class="card-header">
+                            <div class="keyword">2. base64 encoder decoder</div>
+                            <div class="score medium">55.0</div>
+                        </div>
+                        <span class="decision watch">🟡 WATCH</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">decode</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">MEDIUM</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="keyword-card watch">
+                        <div class="card-header">
+                            <div class="keyword">3. html minifier tool</div>
+                            <div class="score medium">63.0</div>
+                        </div>
+                        <span class="decision watch">🟡 WATCH</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">tool</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">MEDIUM</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="keyword-card watch">
+                        <div class="card-header">
+                            <div class="keyword">4. jwt decoder online</div>
+                            <div class="score medium">62.0</div>
+                        </div>
+                        <span class="decision watch">🟡 WATCH</span>
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <div class="meta-label">用户意图</div>
+                                <div class="meta-value">decode</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">需求强度</div>
+                                <div class="meta-value">MEDIUM</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📊 完整数据表格（Top 30）</div>
+            <div class="section-content">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>关键词</th>
+                            <th>评分</th>
+                            <th>决策</th>
+                            <th>用户意图</th>
+                            <th>需求强度</th>
+                            <th>痛点</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>1</td>
+                            <td><strong>image compression tool online</strong></td>
+                            <td><strong>100.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>tool</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>2</td>
+                            <td><strong>color palette generator free</strong></td>
+                            <td><strong>100.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>3</td>
+                            <td><strong>text to speech generator</strong></td>
+                            <td><strong>100.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>4</td>
+                            <td><strong>jpg to png converter online</strong></td>
+                            <td><strong>100.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>HIGH</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>5</td>
+                            <td><strong>xml to json converter</strong></td>
+                            <td><strong>100.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>6</td>
+                            <td><strong>word to pdf converter free</strong></td>
+                            <td><strong>100.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>MEDIUM</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>7</td>
+                            <td><strong>png to jpg converter free</strong></td>
+                            <td><strong>97.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>8</td>
+                            <td><strong>dockerfile generator</strong></td>
+                            <td><strong>95.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>9</td>
+                            <td><strong>free image converter tool</strong></td>
+                            <td><strong>94.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>MEDIUM</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>10</td>
+                            <td><strong>meta tag generator seo</strong></td>
+                            <td><strong>92.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>HIGH</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>11</td>
+                            <td><strong>youtube video downloader free</strong></td>
+                            <td><strong>90.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>general</td>
+                            <td>HIGH</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>12</td>
+                            <td><strong>curl command generator</strong></td>
+                            <td><strong>90.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>HIGH</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>13</td>
+                            <td><strong>logo maker without watermark</strong></td>
+                            <td><strong>89.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>create</td>
+                            <td>LOW</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>14</td>
+                            <td><strong>csv to json converter online</strong></td>
+                            <td><strong>89.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>MEDIUM</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>15</td>
+                            <td><strong>regex tester free</strong></td>
+                            <td><strong>88.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>general</td>
+                            <td>LOW</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>16</td>
+                            <td><strong>gitignore generator</strong></td>
+                            <td><strong>87.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>17</td>
+                            <td><strong>markdown to html converter</strong></td>
+                            <td><strong>87.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>MEDIUM</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>18</td>
+                            <td><strong>ico converter favicon</strong></td>
+                            <td><strong>87.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>19</td>
+                            <td><strong>json to csv converter</strong></td>
+                            <td><strong>86.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>HIGH</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>20</td>
+                            <td><strong>timestamp converter online</strong></td>
+                            <td><strong>86.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>MEDIUM</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>21</td>
+                            <td><strong>robots txt generator</strong></td>
+                            <td><strong>86.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>MEDIUM</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>22</td>
+                            <td><strong>character count tool</strong></td>
+                            <td><strong>85.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>tool</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>23</td>
+                            <td><strong>hash generator md5 sha1</strong></td>
+                            <td><strong>84.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>HIGH</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>24</td>
+                            <td><strong>website seo checker free</strong></td>
+                            <td><strong>84.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>check</td>
+                            <td>LOW</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>25</td>
+                            <td><strong>webp to png converter</strong></td>
+                            <td><strong>84.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>MEDIUM</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>26</td>
+                            <td><strong>uuid generator online</strong></td>
+                            <td><strong>83.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>MEDIUM</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>27</td>
+                            <td><strong>url shortener free online</strong></td>
+                            <td><strong>83.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>general</td>
+                            <td>MEDIUM</td>
+                            <td>✅</td>
+                        </tr>
+
+                        <tr>
+                            <td>28</td>
+                            <td><strong>case converter tool</strong></td>
+                            <td><strong>83.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>convert</td>
+                            <td>MEDIUM</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>29</td>
+                            <td><strong>word counter online free</strong></td>
+                            <td><strong>82.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>general</td>
+                            <td>HIGH</td>
+                            <td>❌</td>
+                        </tr>
+
+                        <tr>
+                            <td>30</td>
+                            <td><strong>Lorem Ipsum generator</strong></td>
+                            <td><strong>82.0</strong></td>
+                            <td><span class="decision build">🔴 BUILD NOW</span></td>
+                            <td>generate</td>
+                            <td>MEDIUM</td>
+                            <td>✅</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>💎 Generated by Profit Hunter ULTIMATE V3</p>
+            <p>📅 报告时间: 2026-01-31 11:47:41</p>
+            <p>🎯 深度分析 | 🔍 Reddit痛点挖掘 | 🧠 用户意图深挖</p>
+        </div>
+    </div>
+</body>
+</html>
