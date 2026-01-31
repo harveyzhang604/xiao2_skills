@@ -1,21 +1,21 @@
-﻿keyword,final_score,decision,intent_type,is_valid,pain_score,pain_level,pain_keywords,competition,gpts_ratio,gpts_comparison,降维打击,is_b2b,monetization_suggestion,demand_strength,pseo_potential
-batch audio to text for journalists free,95,🟡 WATCH,info,False,50,low,[],medium,0.12054948532773967,12.1%,False,True,B2B模式: API服务/企业订阅 (高客单价),HIGH,high
-how to fix error in excel automatically,90,🔴 BUILD NOW,info,True,90,critical,"['fix', 'error']",medium,0.10834465655138377,10.8%,False,False,止痛药模式: 付费工具 (痛点深=易付费),HIGH,high
-remove watermark from video ai free,60,🟡 WATCH,info,False,50,low,[],medium,0.08346707847254774,8.3%,False,False,Freemium模式: 免费基础+高级付费,MEDIUM,high
-stripe fee calculator for international payments,90,🔴 BUILD NOW 💎,info,False,50,low,[],weak,0.10810928524371745,10.8%,True,False,工具模式: 广告+增值服务,HIGH,high
-shopify review scraper bulk export,95,🔴 BUILD NOW 💎,info,False,50,low,[],weak,0.15546916055108662,15.5%,True,True,B2B模式: API服务/企业订阅 (高客单价),HIGH,high
-bulk heic to jpg converter windows 11,95,🔴 BUILD NOW,transactional,True,50,low,[],low,0.09772687598047321,9.8%,False,True,B2B模式: API服务/企业订阅 (高客单价),HIGH,high
-automatic video caption generator for youtube,70,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.09710256004518154,9.7%,False,False,工具模式: 广告+增值服务,MEDIUM,high
-convert json to csv online free tool,95,🔴 BUILD NOW 💎,transactional,True,50,low,[],weak,0.0699518332194717,7.0%,True,False,Freemium模式: 免费基础+高级付费,HIGH,high
-ai voice generator for podcast intro free,95,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.2685560008659257,26.9%,False,False,Freemium模式: 免费基础+高级付费,HIGH,high
-struggling with formatting twitter thread,85,🔴 BUILD NOW,info,True,70,medium,['struggling'],low,0.24478035157515765,24.5%,False,False,止痛药模式: 付费工具 (痛点深=易付费),HIGH,high
-find best alternative to notion for tasks,70,🟡 WATCH,info,False,50,low,[],medium,0.29519920313885717,29.5%,False,False,工具模式: 广告+增值服务,MEDIUM,high
-automatic data entry from pdf to excel,60,🟡 WATCH,info,False,50,low,[],medium,0.19083177932932793,19.1%,False,False,工具模式: 广告+增值服务,MEDIUM,high
-convert spotify playlist to mp3 batch online,95,🔴 BUILD NOW 💎,info,False,50,low,[],weak,0.05166349693672111,5.2%,True,True,B2B模式: API服务/企业订阅 (高客单价),HIGH,high
-meeting minutes generator zoom free,95,🔴 BUILD NOW,transactional,True,50,low,[],low,0.2613660083019806,26.1%,False,False,Freemium模式: 免费基础+高级付费,HIGH,high
-tracking grocery expiration dates app,70,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.054269985225810516,5.4%,False,False,工具模式: 广告+增值服务,MEDIUM,high
-text to speech generator online free,95,🔴 BUILD NOW 💎,transactional,True,50,low,[],weak,0.2511354857597364,25.1%,True,False,Freemium模式: 免费基础+高级付费,HIGH,high
-image compression tool without losing quality,90,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.20146747463707093,20.1%,False,False,工具模式: 广告+增值服务,HIGH,high
-pdf to word converter online free,95,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.27807484987663467,27.8%,False,False,Freemium模式: 免费基础+高级付费,HIGH,high
-password generator strong free,80,🔴 BUILD NOW,transactional,True,50,low,[],medium,0.06285643398712275,6.3%,False,False,Freemium模式: 免费基础+高级付费,HIGH,medium
-logo maker without watermark free,80,🟡 WATCH,info,False,50,low,[],medium,0.2991662612390774,29.9%,False,False,Freemium模式: 免费基础+高级付费,HIGH,high
+﻿keyword,final_score,decision,intent_type,is_valid,pain_score,pain_level,pain_keywords,competition,gpts_ratio,gpts_comparison,降维打击,is_b2b,monetization_suggestion,demand_strength,pseo_potential,word_count,is_rising,trend
+batch audio to text for journalists free,92,🔴 BUILD NOW,transactional,True,50,low,[],weak,0.1729208622423765,22.4%,True,True,Freemium模式,HIGH,high,7,True,rising
+how to fix error in excel automatically,88,🔴 BUILD NOW,transactional,True,110,critical,"['fix', 'error']",weak,0.10023811863249864,20.4%,True,False,止痛药模式,HIGH,high,7,True,rising
+remove watermark from video ai free,85,🔴 BUILD NOW,transactional,True,50,low,[],low,0.1243172128136705,20.4%,False,False,Freemium模式,HIGH,high,6,True,rising
+stripe fee calculator international payments,82,🔴 BUILD NOW,transactional,True,50,low,[],weak,0.08698595723952951,24.7%,True,False,Freemium模式,HIGH,high,5,True,rising
+shopify review scraper bulk export,80,🔴 BUILD NOW,transactional,True,50,low,[],weak,0.20565612654040694,5.9%,True,True,B2B模式,HIGH,high,5,True,rising
+bulk heic to jpg windows 11 desktop,78,🔴 BUILD NOW,transactional,False,50,low,[],low,0.12000829392554607,23.7%,False,True,B2B模式,HIGH,high,7,True,rising
+automatic video caption generator youtube,75,🔴 BUILD NOW,transactional,True,50,low,[],low,0.08215975921073113,11.7%,False,False,Freemium模式,HIGH,high,5,True,rising
+convert json to csv online free tool,72,🔴 BUILD NOW,transactional,False,50,low,[],low,0.2443322306933024,23.1%,False,False,Freemium模式,MEDIUM,high,7,True,rising
+ai voice generator podcast intro free,70,🔴 BUILD NOW,transactional,True,50,low,[],weak,0.07125718129321873,18.0%,True,False,Freemium模式,MEDIUM,high,6,True,rising
+struggling with formatting twitter thread,68,🟡 WATCH,info,False,110,critical,['struggling'],weak,0.10198739867106783,17.1%,True,False,止痛药模式,MEDIUM,high,5,True,rising
+find alternative to notion for tasks,65,🟡 WATCH,info,False,50,low,[],low,0.22386463447202914,19.0%,False,False,Freemium模式,MEDIUM,high,6,True,rising
+automatic data entry pdf to excel,63,🟡 WATCH,transactional,True,50,low,[],weak,0.061340193372266705,16.6%,True,False,Freemium模式,MEDIUM,high,6,True,rising
+convert spotify playlist to mp3 batch,60,🟡 WATCH,transactional,False,50,low,[],low,0.1637586153589236,13.6%,False,True,Freemium模式,MEDIUM,high,6,False,stable
+meeting minutes generator zoom free,58,🟡 WATCH,transactional,False,50,low,[],weak,0.20823110278519702,16.7%,True,False,Freemium模式,MEDIUM,high,5,False,stable
+tracking grocery expiration dates app,55,🟡 WATCH,transactional,False,50,low,[],low,0.10561084437967819,10.1%,False,False,Freemium模式,MEDIUM,high,5,False,stable
+text to speech generator online,52,🟡 WATCH,transactional,False,50,low,[],low,0.20930599030385272,5.7%,False,False,Freemium模式,LOW,high,5,False,stable
+image compression without losing quality,50,🟡 WATCH,transactional,False,50,low,[],low,0.08067937394290581,17.0%,False,False,Freemium模式,LOW,high,5,False,stable
+pdf to word converter online free,48,🟡 WATCH,transactional,False,50,low,[],low,0.1623664828774592,13.6%,False,False,Freemium模式,LOW,high,6,False,stable
+password generator strong free,45,🟡 WATCH,transactional,False,50,low,[],low,0.0705320818590539,6.0%,False,False,Freemium模式,LOW,medium,4,False,stable
+logo maker without watermark free,42,🟡 WATCH,transactional,False,50,low,[],low,0.10930837173244692,14.1%,False,False,Freemium模式,LOW,high,5,False,stable
